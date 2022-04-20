@@ -1,7 +1,6 @@
-from pickletools import optimize
-from django.db import models
-from PIL import Image
 import os
+from PIL import Image
+from django.db import models
 from django.conf import settings
 
 class Produto(models.Model):
