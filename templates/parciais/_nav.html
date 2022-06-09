@@ -14,28 +14,27 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#">Link</a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Dropdown
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#">Disabled</a>
-                </li>
+
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Minha Conta
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{% url 'perfil:criar' %}">Atualizar Dados</a>
+                            <a class="dropdown-item" href="{% url 'perfil:logout' %}">Sair</a>
+                        </div>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'perfil:criar' %}">Entrar</a>
+                    </li>
+                {% endif %}
 
                 {% if request.session.carrinho %}
                 <li class="nav-item">
                     <a class="nav-link nav-cart-link active" href="{% url 'produto:carrinho' %}">
-                        <span class="nav-cart-text mr-1">
-                            Carrinho
-                        </span>
                         <span class="nav-cart-count mr-1">
                             <strong>{{ request.session.carrinho|cart_total_qtd }}x</strong>
                         </span>
