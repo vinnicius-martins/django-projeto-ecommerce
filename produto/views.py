@@ -2,9 +2,9 @@ from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views import View
-from django.http import HttpResponse
 from django.contrib import messages
 from . import models
+from perfil.models import Perfil
 
 
 class ListaProdutos(ListView):
@@ -23,10 +23,6 @@ class DetalheProduto(DetailView):
 
 class AdicionarAoCarrinho(View):
     def get(self, *args, **kwargs):
-        # TODO: remover linhas abaixo
-        # if self.request.session.get('carrinho'):
-        #     del self.request.session['carrinho']
-        #     self.request.session.save()
 
         http_referer = self.request.META.get('HTTP_REFERER', reverse('produto:lista'))
         variacao_id = self.request.GET.get('vid')
@@ -44,7 +40,6 @@ class AdicionarAoCarrinho(View):
         variacao_nome = variacao.nome or ''
         preco_unitario = variacao.preco
         preco_unitario_promocional = variacao.preco_promocional
-        quantidade = 1
         slug = produto.slug
         imagem = produto.imagem
 
@@ -135,6 +130,18 @@ class Carrinho(View):
 
 class ResumoDaCompra(View):
     def get(self, *args, **kwargs):
+        if not self.request.user.is_authenticated:
+            return redirect('perfil:criar')
+
+        perfil = Perfil.objects.filter(usuario=self.request.user).exists()
+        if not perfil:
+            messages.error(self.request, 'Usuario sem perfil.')
+            return redirect('perfil:criar')
+
+        if not self.request.session.get('carrinho'):
+            messages.error(self.request, 'Carrinho vazio')
+            return redirect('produto:lista')
+
         contexto = {
             'usuario': self.request.user,
             'carrinho': self.request.session.get('carrinho', {})
