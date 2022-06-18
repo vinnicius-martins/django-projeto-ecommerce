@@ -103,7 +103,7 @@ class Criar(BasePerfil):
 
         messages.success(self.request, 'Seu cadastro foi realizado com sucesso!')
 
-        return redirect('perfil:carrinho')
+        return redirect('produto:carrinho')
 
 
 class Atualizar(BasePerfil):
